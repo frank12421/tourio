@@ -5,9 +5,9 @@ import Place from "../../../../db/models/Place";
 
 export default async function handler(request, response) {
   await dbConnect();
-
+  console.log("api-id");
   const { id } = request.query;
-  // console.log("api-id-id", id);
+
   if (!id) {
     return;
   }
@@ -22,23 +22,25 @@ export default async function handler(request, response) {
     response.status(200).json(place);
   }
 
-  if (request.method === "POST") {
+  if (request.method === "PATCH") {
     try {
-      const newPlace = request.body;
-      console.log("PUT:", newPlace);
-      await Place.create(newPlace);
-      response.status(201).json({ status: "Place created!" });
+      const updatedPlace = request.body;
+      await Place.findByIdAndUpdate(id, updatedPlace);
+      response.status(200).json({ status: "Place updated!" });
     } catch (error) {
       console.log(error);
       response.status(400).json({ error: error.message });
     }
   }
 
-  // const place = places.find((place) => place.id === id);
-
-  // if (!place) {
-  //   return response.status(404).json({ status: 'Not found' });
-  // }
-
-  // response.status(200).json(place);
+  if (request.method === "DELETE") {
+    try {
+      console.log(id);
+      await Place.findByIdAndDelete(id);
+      response.status(200).json({ message: `Product successfully deleted!` });
+    } catch (error) {
+      console.log(error);
+      response.status(400).json({ error: error.message });
+    }
+  }
 }

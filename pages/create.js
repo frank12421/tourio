@@ -15,6 +15,7 @@ export default function CreatePlacePage() {
   // const { id } = router.query;
   // // console.log("pages-id:", { id });
   // const { data, isLoading } = useSWRConfig(`/api/products/${id}`);
+  const { trigger } = useSWRMutation("/api/places", sendRequest);
 
   async function sendRequest(url, { arg }) {
     const response = await fetch(url, {
@@ -27,11 +28,10 @@ export default function CreatePlacePage() {
     const { status } = await response.json();
   }
 
-  const { trigger } = useSWRMutation("/api", sendRequest);
-
-  function addPlace(place) {
-    console.log("places", place);
-    trigger(place);
+  async function addPlace(place) {
+    // console.log("places", place);
+    const response = await trigger(place);
+    if (response) router.push("/");
   }
 
   return (
